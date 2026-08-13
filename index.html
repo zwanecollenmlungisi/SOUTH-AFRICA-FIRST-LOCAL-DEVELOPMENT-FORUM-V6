@@ -665,22 +665,18 @@
         // =========================================================
         // === 2. INITIALIZE SUPABASE (THE GLOBAL CLIENT) =========
         // =========================================================
-        // This is the CRUCIAL line that makes everything work.
-        // Without this, 'supabase' is not defined.
-        // =========================================================
+        // Use a different variable name to avoid conflict with the library
         const SUPABASE_URL = 'https://ucgsnkectmfbircexhmv.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjZ3Nua2VjdG1mYmlyY2V4aG12Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MDg1NjEsImV4cCI6MjEwMjE4NDU2MX0.bMU5VNVgGzjPHeURH4h1phj62vrKQnSUEKF1txlLGV0';
 
-        // Create the global supabase client
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Create the client – use `sb` (not `supabase`)
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         console.log('✅ SAFLDF: Supabase initialized successfully!');
 
         // =========================================================
-        // === THE REST OF THE JAVASCRIPT (functions, handlers) ====
+        // === HAMBURGER MENU =====================================
         // =========================================================
-
-        // Hamburger
         const hamburger = document.getElementById('hamburger');
         const navLinks = document.getElementById('navLinks');
         hamburger.addEventListener('click', () => { navLinks.classList.toggle('open'); });
@@ -688,7 +684,9 @@
             link.addEventListener('click', () => { navLinks.classList.remove('open'); });
         });
 
-        // Clock
+        // =========================================================
+        // === CLOCK ==============================================
+        // =========================================================
         function updateClock() {
             const now = new Date();
             try {
@@ -711,7 +709,9 @@
         updateClock();
         setInterval(updateClock, 1000);
 
-        // Rotating Motto
+        // =========================================================
+        // === ROTATING MOTTO =====================================
+        // =========================================================
         const mottos = [
             'Building a Skills-First Economy',
             'Empowering the Girl Child',
@@ -732,7 +732,9 @@
         }, 5000);
         mottoEl.style.transition = 'opacity 0.3s ease';
 
-        // Lightbox
+        // =========================================================
+        // === LIGHTBOX ===========================================
+        // =========================================================
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightboxImg');
         function openLightbox(el) {
@@ -749,12 +751,16 @@
             document.body.style.overflow = 'auto';
         }
 
-        // --- LOAD STATIC CONTENT ---
+        // =========================================================
+        // === SUPABASE READ FUNCTIONS (using `sb`) ==============
+        // =========================================================
+
+        // -- Static Content --
         async function loadStaticContent() {
             try {
                 const sections = ['vision', 'mission', 'objectives'];
                 for (const section of sections) {
-                    const { data, error } = await supabase
+                    const { data, error } = await sb
                         .from('static_content')
                         .select('content')
                         .eq('section_key', section)
@@ -769,10 +775,10 @@
             }
         }
 
-        // --- LOAD EVENTS ---
+        // -- Events --
         async function loadEvents() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await sb
                     .from('events')
                     .select('*')
                     .eq('is_active', true)
@@ -823,7 +829,7 @@
             }
         }
 
-        // --- LOAD SPONSORS ---
+        // -- Sponsors --
         async function loadSponsors() {
             try {
                 const tiers = ['platinum', 'gold', 'bronze'];
@@ -832,7 +838,7 @@
 
                 let html = '';
                 for (const tier of tiers) {
-                    const { data, error } = await supabase
+                    const { data, error } = await sb
                         .from('sponsors')
                         .select('*')
                         .eq('tier', tier)
@@ -867,10 +873,10 @@
             }
         }
 
-        // --- LOAD GALLERY ---
+        // -- Gallery --
         async function loadGallery() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await sb
                     .from('gallery_images')
                     .select('*')
                     .order('display_order', { ascending: true });
@@ -895,7 +901,11 @@
             }
         }
 
-        // --- NEWSLETTER HANDLER ---
+        // =========================================================
+        // === FORM HANDLERS ======================================
+        // =========================================================
+
+        // -- Newsletter --
         async function handleNewsletter(e) {
             e.preventDefault();
             const name = document.getElementById('newsName').value.trim();
@@ -904,7 +914,7 @@
             if (!email) { alert('Please enter your email.'); return; }
 
             try {
-                const { error } = await supabase
+                const { error } = await sb
                     .from('newsletter_subscribers')
                     .insert([{ email: email, full_name: name }]);
 
@@ -921,7 +931,7 @@
             }
         }
 
-        // --- VOLUNTEER HANDLER ---
+        // -- Volunteer --
         async function handleVolunteer(e) {
             e.preventDefault();
             const name = document.getElementById('volName').value.trim();
@@ -932,7 +942,7 @@
             if (!name || !email) { alert('Name and email are required.'); return; }
 
             try {
-                const { error } = await supabase
+                const { error } = await sb
                     .from('volunteers')
                     .insert([{
                         full_name: name,
@@ -951,7 +961,7 @@
             }
         }
 
-        // --- DONATION HANDLER ---
+        // -- Donation --
         async function handleDonation(e) {
             e.preventDefault();
             const donorName = document.getElementById('donorName').value.trim();
@@ -961,7 +971,7 @@
             if (!amount || amount < 1) { alert('Please enter a valid amount.'); return; }
 
             try {
-                const { error } = await supabase
+                const { error } = await sb
                     .from('donations')
                     .insert([{
                         donor_name: donorName || null,
@@ -979,14 +989,15 @@
             }
         }
 
-        // --- LOAD EVERYTHING ON PAGE LOAD ---
+        // =========================================================
+        // === LOAD EVERYTHING ON PAGE LOAD =======================
+        // =========================================================
         document.addEventListener('DOMContentLoaded', () => {
             loadStaticContent();
             loadEvents();
             loadSponsors();
             loadGallery();
         });
-    </script>
-
+</script>
 </body>
 </html>
