@@ -6,10 +6,12 @@
     <title>SAFLDF – Uniting Communities for Progress</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    
     <!-- ========================================================= -->
-    <!-- === SUPABASE JS CLIENT (REQUIRED) ======================== -->
+    <!-- 1. SUPABASE CDN (Loads the library)                       -->
     <!-- ========================================================= -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         /* ----- RESET & BASE ----- */
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -269,6 +271,7 @@
                 <div class="belt-item"><img src="https://picsum.photos/seed/entrepreneurship/600/400" alt="Entrepreneurship" loading="lazy"><div class="belt-caption">Entrepreneurship</div></div>
                 <div class="belt-item"><img src="https://picsum.photos/seed/digital/600/400" alt="Digital Literacy" loading="lazy"><div class="belt-caption">Digital Literacy</div></div>
                 <div class="belt-item"><img src="https://picsum.photos/seed/youth/600/400" alt="Youth Leadership" loading="lazy"><div class="belt-caption">Youth Leadership</div></div>
+                <!-- duplicate for seamless loop -->
                 <div class="belt-item"><img src="https://picsum.photos/seed/career/600/400" alt="Career Exhibition" loading="lazy"><div class="belt-caption">Career Exhibitions</div></div>
                 <div class="belt-item"><img src="https://picsum.photos/seed/womenstem/600/400" alt="Women in STEM" loading="lazy"><div class="belt-caption">Women in STEM</div></div>
                 <div class="belt-item"><img src="https://picsum.photos/seed/skills/600/400" alt="Skills Training" loading="lazy"><div class="belt-caption">Skills Training</div></div>
@@ -281,7 +284,7 @@
     </section>
 
     <!-- ========================================================= -->
-    <!-- === VISION, MISSION, OBJECTIVES (Hardcoded + Supabase) === -->
+    <!-- === VISION, MISSION, OBJECTIVES ========================= -->
     <!-- ========================================================= -->
     <section id="vision">
         <div class="container">
@@ -408,7 +411,7 @@
         </div>
     </section>
 
-    <!-- ===== EVENTS (Dynamic from Supabase) ===== -->
+    <!-- ===== EVENTS ===== -->
     <section id="events" class="bg-white">
         <div class="container">
             <h2 class="section-title">Flagship Events &amp; Campaigns</h2>
@@ -417,7 +420,7 @@
         </div>
     </section>
 
-    <!-- ===== GALLERY (Dynamic from Supabase) ===== -->
+    <!-- ===== GALLERY ===== -->
     <section id="gallery" class="bg-cream">
         <div class="container">
             <h2 class="section-title">Photo &amp; Video Gallery</h2>
@@ -482,7 +485,7 @@
     </section>
 
     <!-- ========================================================= -->
-    <!-- === DONATION SECTION (Supabase Insert) ================= -->
+    <!-- === DONATION ============================================ -->
     <!-- ========================================================= -->
     <section id="donate" class="bg-white">
         <div class="container">
@@ -510,7 +513,7 @@
     </section>
 
     <!-- ========================================================= -->
-    <!-- === VOLUNTEER SECTION (Supabase Insert) ================= -->
+    <!-- === VOLUNTEER =========================================== -->
     <!-- ========================================================= -->
     <section id="volunteer" class="bg-cream">
         <div class="container">
@@ -546,7 +549,7 @@
     </section>
 
     <!-- ========================================================= -->
-    <!-- === NEWSLETTER SECTION (Supabase Insert) ================ -->
+    <!-- === NEWSLETTER ========================================== -->
     <!-- ========================================================= -->
     <section id="newsletter" class="bg-white">
         <div class="container">
@@ -565,7 +568,7 @@
         </div>
     </section>
 
-    <!-- ===== SPONSORS (Dynamic from Supabase) ===== -->
+    <!-- ===== SPONSORS (Dynamic) ===== -->
     <section id="sponsors" class="bg-cream">
         <div class="container">
             <h2 class="section-title">Our Valued Partners &amp; Sponsors</h2>
@@ -579,7 +582,7 @@
         </div>
     </section>
 
-    <!-- ===== CONTACT (WhatsApp as secondary) ===== -->
+    <!-- ===== CONTACT ===== -->
     <section id="contact" class="bg-white">
         <div class="container">
             <h2 class="section-title">Get in Touch</h2>
@@ -660,23 +663,24 @@
     <!-- ========================================================= -->
     <script>
         // =========================================================
-        // === YOUR SUPABASE CREDENTIALS (UPDATED!) ==============
+        // === 2. INITIALIZE SUPABASE (THE GLOBAL CLIENT) =========
+        // =========================================================
+        // This is the CRUCIAL line that makes everything work.
+        // Without this, 'supabase' is not defined.
         // =========================================================
         const SUPABASE_URL = 'https://ucgsnkectmfbircexhmv.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjZ3Nua2VjdG1mYmlyY2V4aG12Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MDg1NjEsImV4cCI6MjEwMjE4NDU2MX0.bMU5VNVgGzjPHeURH4h1phj62vrKQnSUEKF1txlLGV0';
 
-        // =========================================================
-        // === INITIALIZE SUPABASE ===============================
-        // =========================================================
+        // Create the global supabase client
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // --- TEST CONNECTION (will log to console) ---
-        console.log('✅ Supabase initialized with your credentials!');
-        console.log('🔗 URL:', SUPABASE_URL);
+        console.log('✅ SAFLDF: Supabase initialized successfully!');
 
         // =========================================================
-        // === HAMBURGER MENU =====================================
+        // === THE REST OF THE JAVASCRIPT (functions, handlers) ====
         // =========================================================
+
+        // Hamburger
         const hamburger = document.getElementById('hamburger');
         const navLinks = document.getElementById('navLinks');
         hamburger.addEventListener('click', () => { navLinks.classList.toggle('open'); });
@@ -684,9 +688,7 @@
             link.addEventListener('click', () => { navLinks.classList.remove('open'); });
         });
 
-        // =========================================================
-        // === CLOCK ==============================================
-        // =========================================================
+        // Clock
         function updateClock() {
             const now = new Date();
             try {
@@ -709,9 +711,7 @@
         updateClock();
         setInterval(updateClock, 1000);
 
-        // =========================================================
-        // === ROTATING MOTTO =====================================
-        // =========================================================
+        // Rotating Motto
         const mottos = [
             'Building a Skills-First Economy',
             'Empowering the Girl Child',
@@ -732,9 +732,7 @@
         }, 5000);
         mottoEl.style.transition = 'opacity 0.3s ease';
 
-        // =========================================================
-        // === LIGHTBOX ===========================================
-        // =========================================================
+        // Lightbox
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightboxImg');
         function openLightbox(el) {
@@ -751,11 +749,7 @@
             document.body.style.overflow = 'auto';
         }
 
-        // =========================================================
-        // === SUPABASE READ FUNCTIONS ============================
-        // =========================================================
-
-        // -- Static Content (Vision, Mission, Objectives) --
+        // --- LOAD STATIC CONTENT ---
         async function loadStaticContent() {
             try {
                 const sections = ['vision', 'mission', 'objectives'];
@@ -775,7 +769,7 @@
             }
         }
 
-        // -- Events --
+        // --- LOAD EVENTS ---
         async function loadEvents() {
             try {
                 const { data, error } = await supabase
@@ -829,7 +823,7 @@
             }
         }
 
-        // -- Sponsors --
+        // --- LOAD SPONSORS ---
         async function loadSponsors() {
             try {
                 const tiers = ['platinum', 'gold', 'bronze'];
@@ -873,7 +867,7 @@
             }
         }
 
-        // -- Gallery --
+        // --- LOAD GALLERY ---
         async function loadGallery() {
             try {
                 const { data, error } = await supabase
@@ -901,11 +895,7 @@
             }
         }
 
-        // =========================================================
-        // === FORM HANDLERS (Supabase Insert) ====================
-        // =========================================================
-
-        // -- Newsletter --
+        // --- NEWSLETTER HANDLER ---
         async function handleNewsletter(e) {
             e.preventDefault();
             const name = document.getElementById('newsName').value.trim();
@@ -931,7 +921,7 @@
             }
         }
 
-        // -- Volunteer --
+        // --- VOLUNTEER HANDLER ---
         async function handleVolunteer(e) {
             e.preventDefault();
             const name = document.getElementById('volName').value.trim();
@@ -961,7 +951,7 @@
             }
         }
 
-        // -- Donation --
+        // --- DONATION HANDLER ---
         async function handleDonation(e) {
             e.preventDefault();
             const donorName = document.getElementById('donorName').value.trim();
@@ -989,9 +979,7 @@
             }
         }
 
-        // =========================================================
-        // === LOAD EVERYTHING ON PAGE LOAD =======================
-        // =========================================================
+        // --- LOAD EVERYTHING ON PAGE LOAD ---
         document.addEventListener('DOMContentLoaded', () => {
             loadStaticContent();
             loadEvents();
